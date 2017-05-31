@@ -5,37 +5,50 @@ import multiprocessing
 from mongodb_queue import MogoQueue
 from Download import request
 from bs4 import BeautifulSoup
+import re
 
 SLEEP_TIME = 1
-
-def E_Hen_crawler(max_threads=5):
-    img_queue = MogoQueue('meinv', 'img_queue')
+lock=threading.Lock()
+def E_Hen_crawler(max_threads=4):
+    jinji = MogoQueue('meinv', 'jinji')
     def pageurl_crawler():
         while True:
             try:
-                (url,name) = img_queue.pop()
+                (url,name) = jinji.pop()
                 print(url)
             except KeyError:
                 print('队列没有数据')
                 break
             else:
-                title = img_queue.pop_title_(url)
-                path = str(title).replace('?', '')
-                mkdir(path)
-                os.chdir('E:\E-Hen\\' + path)
-                html = request.get(url, 3)
+                lock.acquire()
+                img_urls=[]
+                html = request.get(url, 10)
+                title = jinji.pop_title_(url)
+                mkdir(title)
+                os.chdir('E:\E-Hen\\' + title)
+                html.encoding = html.apparent_encoding
                 html_soup = BeautifulSoup(html.text, 'lxml')
-                img = html_soup.find('div', id='i3').find('img')
-                img_url = img['src']
-                print(u'得到图片的链接')
-                save(img_url, name)
-                img_queue.complete(url)
+                max_span = html_soup.find_all('table')[1].find_all('option')[-1].get_text()[2:4]
+                for page in range(1,int(max_span)+1):
+                    if page < 10:
+                        page_url=url[:-6]+str(page)+'.html'
+                    else:
+                        page_url = url[:-7] + str(page) + '.html'
+                    page_html = request.get(page_url, 10)
+                    page_html.encoding = page_html.apparent_encoding
+                    pattern = re.compile('<a href=".*?"><img src="(.*?)" border="0".*?oncontextmenu=.*?')
+                    img_url = re.findall(pattern, page_html.text)[0]
+                    img_urls.append(img_url)
+                    print(u'得到图片的链接')
+                    save(img_url)
+                jinji.complete(url)
+                lock.release()
 
-    def save(img_url,page_name):
-        name=page_name
+    def save(img_url):
+        name=img_url[-7:]
         print(u'开始保存：', img_url,'\n')
-        img=request.get(img_url,10)
-        f=open(name+'.jpg','ab')
+        img=request.get(img_url,15)
+        f=open(name,'ab')
         f.write(img.content)
         f.close()
 
@@ -51,11 +64,11 @@ def E_Hen_crawler(max_threads=5):
             return False
 
     threads = []
-    while threads or img_queue:
+    while threads or jinji:
         for thread in threads:
             if not thread.is_alive(): ##is_alive是判断是否为空,不是空则在队列中删掉
                 threads.remove(thread)
-        while len(threads) < max_threads and img_queue.peek(): ##线程池中的线程少于max_threads 或者 crawl_qeue时
+        while len(threads) < max_threads and jinji.peek(): ##线程池中的线程少于max_threads 或者 crawl_qeue时
             thread = threading.Thread(target=pageurl_crawler) ##创建线程
             thread.setDaemon(True) ##设置守护线程
             thread.start() ##启动线程

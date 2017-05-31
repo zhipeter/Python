@@ -49,8 +49,8 @@ class MogoQueue():
         record=self.db.find_one({'_id':url})
         return record['主题']
 
-    def pop_title_(self):
-        record=self.db.find_one()
+    def pop_title_(self,url):
+        record=self.db.find_one({'_id':url})
         if record:
             return record['主题']
         else:

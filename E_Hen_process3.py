@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 SLEEP_TIME = 1
 
 def E_Hen_crawler(max_threads=5):
-    img_queue = MogoQueue('meinv', 'img_queue')
+    img_queue = MogoQueue('meinv', 'xiumm')
     def pageurl_crawler():
         while True:
             try:
@@ -23,18 +23,13 @@ def E_Hen_crawler(max_threads=5):
                 path = str(title).replace('?', '')
                 mkdir(path)
                 os.chdir('E:\E-Hen\\' + path)
-                html = request.get(url, 3)
-                html_soup = BeautifulSoup(html.text, 'lxml')
-                img = html_soup.find('div', id='i3').find('img')
-                img_url = img['src']
-                print(u'得到图片的链接')
-                save(img_url, name)
+                save(url, name)
                 img_queue.complete(url)
 
     def save(img_url,page_name):
         name=page_name
         print(u'开始保存：', img_url,'\n')
-        img=request.get(img_url,10)
+        img=request.get(img_url,3)
         f=open(name+'.jpg','ab')
         f.write(img.content)
         f.close()

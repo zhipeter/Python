@@ -7,10 +7,10 @@ class download:
 
     def __init__(self):
         self.iplist = []
-        html = requests.get("http://haoip.cc/tiqu.htm")
-        ipn = re.findall(r'r/>(.*?)<b', html.text, re.S)
+        html = requests.get("http://www.kuaidaili.com/")
+        ipn = re.findall(r'<td data-title="IP">(.*?)</td>.*?<td data-title="PORT">(.*?)</td>', html.text, re.S)
         for ip in ipn:
-            i = re.sub('\n', '', ip)
+            i = ip[0]+':'+ip[1]
             self.iplist.append(i.strip())
 
         self.user_agent_list=[
@@ -37,7 +37,7 @@ class download:
     def get(self, url, timeout, proxy=None,num_retries=6):
         print(u'开始获取：',url)
         UA=random.choice(self.user_agent_list)
-        headers={'user-Agent':UA}
+        headers={'user-Agent':UA,'Connection':'keep-alive','Accept-Encoding':'gzip, deflate'}
 
         if proxy==None:
             try:
