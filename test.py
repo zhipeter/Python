@@ -7,7 +7,7 @@
 
 #     def __init__(self):
 #         self.iplist = []
-#         html = requests.get("http://www.kuaidaili.com/")
+#         html = requests.get("http://www.kuaidaili.com/free/")
 #         ipn = re.findall(r'<td data-title="IP">(.*?)</td>.*?<td data-title="PORT">(.*?)</td>', html.text, re.S)
 #         for ip in ipn:
 #             i = ip[0]+':'+ip[1]
@@ -59,31 +59,31 @@
 
 # request=download()
 
-# html="http://www.baidu.com"
+# html="https://steamcn.com/forum.php"
 # request.get(html,10)
 
 # ------------------------------------
-from Download import request
-from bs4 import BeautifulSoup
+# from Download import request
+# from bs4 import BeautifulSoup
 
-def start(url):
-    response = request.get(url, 3)
-    response.encoding=response.apparent_encoding
-    Soup = BeautifulSoup(response.text, 'lxml')
-    all_a = Soup.find_all('fieldset', id='info')[1].find_all('a')
-    all_pages = Soup.find_all('fieldset', id='info')[1].find_all('font')
-    title=0
-    pp=""
-    for page in all_pages:
-        ppp=page.get_text()
-        pp+=(ppp[1:3]+',')
-        print(title,ppp)
-        title+=1
-    print(pp)
+# def start(url):
+#     response = request.get(url, 3)
+#     response.encoding=response.apparent_encoding
+#     Soup = BeautifulSoup(response.text, 'lxml')
+#     all_a = Soup.find_all('fieldset', id='info')[1].find_all('a')
+#     all_pages = Soup.find_all('fieldset', id='info')[1].find_all('font')
+#     title=0
+#     pp=""
+#     for page in all_pages:
+#         ppp=page.get_text()
+#         pp+=(ppp[1:3]+',')
+#         print(title,ppp)
+#         title+=1
+#     print(pp)
 
-if __name__ == "__main__":
-    start('http://www.cartoonmad.com/comic/1221.html')
-# import os
+# if __name__ == "__main__":
+#     start('http://www.cartoonmad.com/comic/1221.html')
+# # import os
 # path='E:\\E-Hen\\'
 # for root,dirs,files in os.walk(path):
 #     for dir in dirs:
@@ -94,3 +94,90 @@ if __name__ == "__main__":
 #                 for file in files:
 #                     i=i+1
 #             print(dir,i)
+from Download import request
+from bs4 import BeautifulSoup
+
+url='https://www.meitulu.com/t/beautyleg/'
+s='http://www.xiumm.org'
+# def start(url):
+#     response = request.get(url, 3)
+#     response.encoding = 'utf-8'
+#     Soup = BeautifulSoup(response.text, 'lxml')
+#     max_span = Soup.find('div', class_='paginator').find_all('a')
+#     i=1
+#     page_url = s
+#     for page in max_span[0:1]:
+#         print(i,"  ",page_url)
+#         page_url = s+page['href']
+#         html = request.get(page_url, 3)
+#         html.encoding='utf-8'
+#         Soup = BeautifulSoup(html.text, 'lxml')
+#         all_td = Soup.find('div', class_='gallary_wrap').find_all('td')
+#         for td in all_td:
+#         	address = td.a['href']
+#         	title=td.a.img['alt']
+#         	print(title)
+#         page_url = s + page['href']
+
+
+# def start(url):
+#     response = request.get(url, 3)
+#     Soup = BeautifulSoup(response.text, 'lxml')
+#     title = Soup.find('div', class_='gm').find('h1', id='gj').get_text()
+#     max_span = Soup.find('table', class_='ptt').find_all('td')[-2].get_text()
+#     page_url = url
+#     for i in range(1,int(max_span)+1):
+#     	print(page_url)
+#     	page_url =url+'?p='+str(i)
+    	
+# if __name__ == "__main__":
+#     start('https://e-hentai.org/g/436452/62eea14228/')
+    def all_url(url):
+        html=request.get(url,3)
+        html.encoding = html.apparent_encoding
+        Soup = BeautifulSoup(html.text, 'lxml')
+        all_p = Soup.find('div', class_='boxs').find_all('p', class_='p_title')
+        for p in all_p:
+            a=p.find('a')
+            title=a.get_text()
+            self.title=title1
+            href=a['href']
+            self.url=href
+
+    def html(self,href):
+        html=request.get(href,3)
+        html_soup = BeautifulSoup(html.text, 'lxml')
+        max_span = html_soup.find('div', id='pages').find_all('a')[-2].get_text()
+        page_num=1
+        self.img(href, max_span, page_num)
+        for page in range(1,int(max_span)):
+            page_num +=1
+            page_url=href+'_'+str(page)
+            self.img(page_url,max_span,page_num)
+
+    def img(self,page_url,max_span,page_num):
+        img_html=request.get(page_url,3)
+        img_soup=BeautifulSoup(img_html.text, 'lxml')
+        img_dict=img_soup.find('div', class_='content').find('img')
+        if img_dict is not None:
+            img_url=img_dict['src']
+        else:
+            print(u'没有获取到img_url')
+            return None
+        img_url_reg=re.compile('http://.*?\.jpg', re.S)
+        if re.match(img_url_reg, img_url):
+            self.img_urls.append(img_url)
+            if int(max_span) == page_num:
+                self.save(img_url)
+                post = {
+                    '标题': self.title,
+                    '主题页面': self.url,
+                    '图片地址': self.img_urls,
+                    '获取时间': datetime.datetime.now()
+                }
+                self.meizitu_collection.save(post)
+                print(u'插入数据库成功')
+            else:
+                self.save(img_url)
+        else:
+            print(u'图片不是有效链接！')

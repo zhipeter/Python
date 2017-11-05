@@ -23,14 +23,14 @@ class mzitu():
             title=a.get_text()
             self.title=title
             print(u'开始保存：',title)
-            path=str(title).replace("?","_")
-            self.mkdir(path)
-            os.chdir("E:\mzitu\\"+path)
             href=a['href']
             self.url=href
             if self.meizitu_collection.find_one({'主题页面':href}):
                 print(u'这个页面已经爬取过了')
             else:
+                path = str(title).replace("?", "_")
+                self.mkdir(path)
+                os.chdir("E:\mzitu\\" + path)
                 self.html(href)
 
     def html(self,href):

@@ -26,7 +26,7 @@ for root,dirs,files in os.walk(path):
             elif dirname=="游戏":
                   int[4]+=1
                   os.rename(os.path.join(root,name),os.path.join(root, "Game"+str(int[4])+fext))
-            elif dirname=="杂物" or "其他":
+            elif dirname=="杂物" or dirname=="其他":
                   int[5]+=1
                   os.rename(os.path.join(root,name),os.path.join(root, "Other"+str(int[5])+fext))
             else:

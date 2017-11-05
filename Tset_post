@@ -1,0 +1,14 @@
+import requests
+import re
+import random
+import time
+
+class download:
+
+    def __init__(self):
+        self.iplist = []
+        html = requests.get("http://www.kuaidaili.com/free/")
+        ipn = re.findall(r'<td data-title="IP">(.*?)</td>.*?<td data-title="PORT">(.*?)</td>', html.text, re.S)
+        for ip in ipn:
+            i = ip[0]+':'+ip[1]
+            self.iplist.append(i.strip())

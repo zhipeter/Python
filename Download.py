@@ -6,12 +6,17 @@ import time
 class download:
 
     def __init__(self):
-        self.iplist = []
-        html = requests.get("http://www.kuaidaili.com/")
-        ipn = re.findall(r'<td data-title="IP">(.*?)</td>.*?<td data-title="PORT">(.*?)</td>', html.text, re.S)
-        for ip in ipn:
-            i = ip[0]+':'+ip[1]
-            self.iplist.append(i.strip())
+        self.iplist =[
+        '127.0.0.1:1080', 
+        '127.0.0.1:80', 
+        '116.231.152.39:53281',
+        '117.135.164.170:80']
+        # self.iplist = []
+        # html = requests.get("http://www.kuaidaili.com/free/")
+        # ipn = re.findall(r'<td data-title="IP">(.*?)</td>.*?<td data-title="PORT">(.*?)</td>', html.text, re.S)
+        # for ip in ipn:
+        #     i = ip[0]+':'+ip[1]
+        #     self.iplist.append(i.strip())
 
         self.user_agent_list=[
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",
@@ -34,7 +39,7 @@ class download:
             "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
         ]
 
-    def get(self, url, timeout, proxy=None,num_retries=6):
+    def get(self, url, timeout, proxy=None,num_retries=2):
         print(u'开始获取：',url)
         UA=random.choice(self.user_agent_list)
         headers={'user-Agent':UA,'Connection':'keep-alive','Accept-Encoding':'gzip, deflate'}

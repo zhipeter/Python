@@ -7,7 +7,8 @@ from Download import request
 from bs4 import BeautifulSoup
 
 SLEEP_TIME = 1
-
+lock=threading.Lock()
+s='http://www.xiumm.org/'
 def E_Hen_crawler(max_threads=5):
     img_queue = MogoQueue('meinv', 'xiumm')
     def pageurl_crawler():
@@ -19,17 +20,36 @@ def E_Hen_crawler(max_threads=5):
                 print('队列没有数据')
                 break
             else:
+                lock.acquire()
                 title = img_queue.pop_title_(url)
                 path = str(title).replace('?', '')
                 mkdir(path)
                 os.chdir('E:\E-Hen\\' + path)
-                save(url, name)
+                response = request.get(url, 3)
+                response.encoding = 'utf-8'
+                Soup = BeautifulSoup(response.text, 'lxml')
+                all_url = Soup.find('div', class_='gallary_wrap').find_all('td')
+                max_span = Soup.find('div', class_='paginator').find_all('a')
+                for td in all_url:
+                    href = s + td.img['src']
+                    name = td.img['alt'].strip()[-3:]
+                    save(href, name)
+                for page in max_span:
+                    page_url = s + page['href']
+                    html = request.get(page_url, 3)
+                    Soup = BeautifulSoup(html.text, 'lxml')
+                    all_td = Soup.find('div', class_='gallary_wrap').find_all('td')
+                    for td2 in all_td:
+                        href2 = s + td2.img['src']
+                        name2 = td2.img['alt'].strip()[-3:]
+                        save(href2, name2)
                 img_queue.complete(url)
+                lock.release()
 
     def save(img_url,page_name):
         name=page_name
         print(u'开始保存：', img_url,'\n')
-        img=request.get(img_url,3)
+        img=request.get(img_url,15)
         f=open(name+'.jpg','ab')
         f.write(img.content)
         f.close()

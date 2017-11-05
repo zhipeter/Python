@@ -34,7 +34,7 @@ def E_Hen_crawler(max_threads=5):
     def save(img_url,page_name):
         name=page_name
         print(u'开始保存：', img_url,'\n')
-        img=request.get(img_url,10)
+        img=request.get(img_url,15)
         f=open(name+'.jpg','ab')
         f.write(img.content)
         f.close()
