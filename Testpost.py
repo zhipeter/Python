@@ -1,21 +1,27 @@
-import requests
-import re
-import random
-import time
+'''
+This is a light
+'''
+A = 1
+A = A + 1
 
-def gg():
-	iplist = []
-	i = "122.193.14.102:843"
-	iplist.append(i.strip())
-	i = "218.14.121.229:9000"
-	iplist.append(i.strip())
-	i = "115.200.70.52:8998"
-	iplist.append(i.strip())
-	i = "121.232.145.219:9000"
-	iplist.append(i.strip())
-	print(iplist)
 
-gg()
+def ggg():
+    '''
+    ok
+    '''
+    iplist = []
+    i = "122.193.14.102:843"
+    iplist.append(i.strip())
+    i = "218.14.121.229:9000"
+    iplist.append(i.strip())
+    i = "115.200.70.52:8998"
+    iplist.append(i.strip())
+    i = "121.232.145.219:9000"
+    iplist.append(i.strip())
+    print(iplist)
+
+
+ggg()
 
 # 122.193.14.102	843	高匿名	HTTP	中国 江苏省 南京市 联通	0.9秒	2017-09-30 12:42:19
 # 218.14.121.229	9000	高匿名	HTTP	广东省惠州市 电信	1秒	2017-09-30 11:43:13

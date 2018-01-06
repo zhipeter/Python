@@ -24,7 +24,7 @@ def start(url):
             spider_queue.push(href, title,name)
 
 if __name__ == "__main__":
-    start('https://e-hentai.org/g/634810/be7f15e14a/')
+    start('https://e-hentai.org/g/873082/31041582fa/')
     # "https://e-hentai.org/g/217371/bf72e21e08/"
     # "https://e-hentai.org/g/39687/e7538d3165/"
     # "https://e-hentai.org/g/217401/4a28472869/"

@@ -9,8 +9,8 @@ class download:
         self.iplist =[
         '127.0.0.1:1080', 
         '127.0.0.1:80', 
-        '116.231.152.39:53281',
-        '117.135.164.170:80']
+        '221.181.6.37:8888',
+        '121.232.148.220:9000']
         # self.iplist = []
         # html = requests.get("http://www.kuaidaili.com/free/")
         # ipn = re.findall(r'<td data-title="IP">(.*?)</td>.*?<td data-title="PORT">(.*?)</td>', html.text, re.S)
