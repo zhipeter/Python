@@ -2,6 +2,7 @@ from Download import request
 from mongodb_queue import MogoQueue
 from bs4 import BeautifulSoup
 
+
 def start(url):
     response = request.get(url, 3)
     Soup = BeautifulSoup(response.text, 'lxml')
@@ -21,10 +22,11 @@ def start(url):
         for a in all_a:
             href = a['href']
             name = a.img['alt']
-            spider_queue.push(href, title,name)
+            spider_queue.push(href, title, name)
+
 
 if __name__ == "__main__":
-    start('https://e-hentai.org/g/873082/31041582fa/')
+    start('https://e-hentai.org/g/756577/2b56e66f15/')
     # "https://e-hentai.org/g/217371/bf72e21e08/"
     # "https://e-hentai.org/g/39687/e7538d3165/"
     # "https://e-hentai.org/g/217401/4a28472869/"

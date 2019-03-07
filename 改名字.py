@@ -3,9 +3,9 @@ import os
 import shutil
 
 string = input("输入日期：")
-path = 'E:\\Camera360\\2017\\' + str(string)
+path = 'E:\\Camera360\\2018\\' + str(string)
 0
-int = [0, 0, 0, 0, 0, 0, 0]
+int = [0, 0, 0, 0, 0, 0, 0, 0]
 for root, dirs, files in os.walk(path):
     for name in files:
         fname, fext = os.path.splitext(name)
@@ -37,16 +37,21 @@ for root, dirs, files in os.walk(path):
             os.rename(
                 os.path.join(root, name),
                 os.path.join(root, "Game" + str(int[4]) + fext))
-        elif dirname == "杂物" or dirname == "其他":
+        elif dirname == "愿望单":
             int[5] += 1
             os.rename(
                 os.path.join(root, name),
-                os.path.join(root, "Other" + str(int[5]) + fext))
-        else:
+                os.path.join(root, "WishList" + str(int[5]) + fext))
+        elif dirname == "杂物" or dirname == "其他":
             int[6] += 1
             os.rename(
                 os.path.join(root, name),
-                os.path.join(root, "Nothing" + str(int[6]) + fext))
+                os.path.join(root, "Other" + str(int[6]) + fext))
+        else:
+            int[7] += 1
+            os.rename(
+                os.path.join(root, name),
+                os.path.join(root, "Nothing" + str(int[7]) + fext))
 
 for root, dirs, files in os.walk(path):
     for name in files:

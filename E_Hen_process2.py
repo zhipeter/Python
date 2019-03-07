@@ -8,12 +8,14 @@ from bs4 import BeautifulSoup
 
 SLEEP_TIME = 1
 
+
 def E_Hen_crawler(max_threads=5):
     img_queue = MogoQueue('meinv', 'img_queue')
+
     def pageurl_crawler():
         while True:
             try:
-                (url,name) = img_queue.pop()
+                (url, name) = img_queue.pop()
                 print(url)
             except KeyError:
                 print('队列没有数据')
@@ -31,11 +33,11 @@ def E_Hen_crawler(max_threads=5):
                 save(img_url, name)
                 img_queue.complete(url)
 
-    def save(img_url,page_name):
-        name=page_name
-        print(u'开始保存：', img_url,'\n')
-        img=request.get(img_url,15)
-        f=open(name+'.jpg','ab')
+    def save(img_url, page_name):
+        name = page_name
+        print(u'开始保存：', img_url, '\n')
+        img = request.get(img_url, 15)
+        f = open(name + '.jpg', 'ab')
         f.write(img.content)
         f.close()
 
@@ -53,25 +55,28 @@ def E_Hen_crawler(max_threads=5):
     threads = []
     while threads or img_queue:
         for thread in threads:
-            if not thread.is_alive(): ##is_alive是判断是否为空,不是空则在队列中删掉
+            if not thread.is_alive():  ##is_alive是判断是否为空,不是空则在队列中删掉
                 threads.remove(thread)
-        while len(threads) < max_threads and img_queue.peek(): ##线程池中的线程少于max_threads 或者 crawl_qeue时
-            thread = threading.Thread(target=pageurl_crawler) ##创建线程
-            thread.setDaemon(True) ##设置守护线程
-            thread.start() ##启动线程
-            threads.append(thread) ##添加进线程队列
+        while len(threads) < max_threads and img_queue.peek(
+        ):  ##线程池中的线程少于max_threads 或者 crawl_qeue时
+            thread = threading.Thread(target=pageurl_crawler)  ##创建线程
+            thread.setDaemon(True)  ##设置守护线程
+            thread.start()  ##启动线程
+            threads.append(thread)  ##添加进线程队列
         time.sleep(SLEEP_TIME)
+
 
 def process_crawler():
     process = []
     num_cpus = multiprocessing.cpu_count()
     print('将会启动进程数为：', num_cpus)
     for i in range(num_cpus):
-        p = multiprocessing.Process(target=E_Hen_crawler) ##创建进程
-        p.start() ##启动进程
-        process.append(p) ##添加进进程队列
+        p = multiprocessing.Process(target=E_Hen_crawler)  ##创建进程
+        p.start()  ##启动进程
+        process.append(p)  ##添加进进程队列
     for p in process:
-        p.join() ##等待进程队列里面的进程结束
+        p.join()  ##等待进程队列里面的进程结束
+
 
 if __name__ == "__main__":
     process_crawler()
